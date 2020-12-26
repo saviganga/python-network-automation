@@ -14,7 +14,7 @@ def save_config(devicee):
 
     save_commands = ['exit', 'copy run start', 'y']
     print('-'*50)
-    print(f'\nSaving configurations for {devicee}...')
+    print(f'\nsending saving configuration commands for {devicee}...')
     time.sleep(1)
 
     for command in save_commands:
