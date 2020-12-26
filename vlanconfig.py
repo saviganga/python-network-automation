@@ -12,7 +12,7 @@ def save_config(devicee):
 
     '''sends configuration commands to save running configuration to startup configuration'''
 
-    save_commands = ['exit', 'save run start', 'y']
+    save_commands = ['exit', 'copy run start', 'y']
     print('-'*50)
     print(f'\nSaving configurations for {devicee}...')
     time.sleep(1)
