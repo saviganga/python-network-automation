@@ -14,7 +14,7 @@ def save_config(devicee):
 
     save_commands = ['exit', 'copy run start', 'y']
     print('-'*50)
-    print(f'\nsending saving configuration commands for {devicee}...')
+    print(f'\nsaving configurations for {devicee}...')
     time.sleep(1)
 
     for command in save_commands:
@@ -31,7 +31,7 @@ def vlan_config(devicee):
     '''sends configuration commands to set up valns'''
 
     print('-'*50)
-    print(f'\nsending vlan configurations for {devicee}...\n')
+    print(f'\nsending vlan configuration commands for {devicee}...\n')
     time.sleep(1)
 
     for command in vlan_commands:
@@ -54,7 +54,7 @@ def login_config(devicee):
 
     login_commands = ['enable', 'conf t',]
     print('-'*50)
-    print(f'\nsending login configurations for {devicee}...')
+    print(f'\nsending login configuration commands for {devicee}...')
     time.sleep(1)
 
     for command in login_commands:
@@ -190,6 +190,7 @@ if __name__ == "__main__":
     
     stop_time = time.time()
 
-    program_time = round(stop_time - start_time, 2)
+    prog_time = round(stop_time - start_time, 2)
+    program_time = int(prog_time/60)
 
-    print(f'\nconfiguration time: {program_time}\n')
+    print(f'\nconfiguration time: {program_time}mins\n')
