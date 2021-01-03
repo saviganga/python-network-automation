@@ -2,19 +2,29 @@
 
 '''subnetting a class C IP Address'''
 
-def subnet_ip(ip_address, subnet_mask):
+def subnet_ip(addr_list):
 
     '''
     takes an ip address and subnet mask, calculates subnet info from subnet mask
     returns network address and broadcast address of ip address
     '''
 
-    network_bits = ip_address.rindex('.')
-    network_addr = ip_address[ :network_bits].split('.')
-    ip_address = ip_address.split('.')
+    ip_addr = addr_list[0]
+    s_mask = addr_list[1]
+
+    valid_block_sizes = ['128', '192', '224', '240', '248', '252']
+
+    network_bits = ip_addr.rindex('.')
+    network_addr = ip_addr[ :network_bits].split('.')
+    ip_address = ip_addr.split('.')
 
     #select subnet mask and convert all octets to binary
-    subnet_mask = subnet_mask.split('.')
+    subnet_mask = s_mask.split('.')
+    #for mask in subnet_mask:
+        #if mask != '255' or mask not in valid_block_sizes:
+            #print('\nError: invalid subnet mask\n')
+            #enter_ip()
+            
     subnet_mask_bin = [str(bin(int(octet))).replace('0b', '') for octet in subnet_mask]
     
 
@@ -97,14 +107,15 @@ def subnet_ip(ip_address, subnet_mask):
         
 
 
-    
-    
+def enter_ip():
 
-if __name__ == "__main__":
-    
     address = input('\nEnter ip address and subnet mask seperated by a space: ')
     addr = address.split(' ')
-    ip_addr = addr[0]
-    s_mask = addr[1]
-    s = subnet_ip(ip_addr, s_mask)
+    return addr
+
+if __name__ == "__main__":
+
+    ip_address = enter_ip()    
+    s = subnet_ip(ip_address)
+    print(f'\nNetwork Info:\n{s}\n')
 #   print(f'\n{s}\n')
