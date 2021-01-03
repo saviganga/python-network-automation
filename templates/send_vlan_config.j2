@@ -1,0 +1,8 @@
+sending vlan configuration commands for {{ device }}...
+{% for command in vlan_commands %}
+
+    command sent...{{ command.id }}
+    command sent...{{ command.name }}
+    command sent...exit
+
+{% endfor %}
