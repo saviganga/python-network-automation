@@ -3,75 +3,54 @@
 import time
 import yaml
 from create_vlans import create_vlan
-
+from jinja2 import Environment, FileSystemLoader
+    
 def send_save_config(devicee):
 
     '''sends configuration commands to save running configuration to startup configuration'''
         
+    template_env = Environment(loader=FileSystemLoader('./templates/'))
+    template_obj = template_env.get_template('send_save_config.j2')
+
     with open('yaml-configs/save_config.yaml') as save_file:
         save_commands = yaml.full_load(save_file)
 
-    print('-'*50)
-    print(f'\nsaving configurations for {devicee}...')
-    time.sleep(1)
-    for command in save_commands:
-        print(f'\ncommand sent...{command}')
-        time.sleep(1)
-    print('-'*50)
-
+    save_config = template_obj.render(device=devicee, save_commands=save_commands)
+    print(save_config)
 
 def send_vlan_config(devicee):
 
     '''sends configuration commands to set up valns'''
 
+    template_env = Environment(loader=FileSystemLoader('./templates/'))
+    template_obj = template_env.get_template('send_vlan_config.j2')
+
     with open('yaml-configs/vlan_commands.yaml') as vlan_config_file:
         vlan_commands = yaml.full_load(vlan_config_file)
 
-    print('-'*50)
-    print(f'\nsending vlan configuration commands for {devicee}...\n')
-    time.sleep(1)
-    for command in vlan_commands:
-        v_id = command.get('id')
-        v_name = command.get('name')
-        print(f'command sent...vlan {v_id}')
-        time.sleep(1)
-        print(f'command sent...{v_name}')
-        time.sleep(1)
-        print(f'command sent...exit\n')
-        time.sleep(1)
-    print('-'*50)
-
+    vlan_config = template_obj.render(device=devicee, vlan_commands=vlan_commands)
+    print(vlan_config)
 
 def send_login_config(devicee):
 
     '''sends configuration commands to log into a device'''
 
+    template_env = Environment(loader=FileSystemLoader('./templates/'))
+    template_obj = template_env.get_template('send_login_config.j2')
+
     with open('yaml-configs/login_config.yaml') as login_file:
         login_commands = yaml.full_load(login_file)
 
-    print('-'*50)
-    print(f'\nsending login configuration commands for {devicee}...')
-    time.sleep(1)
-    for command in login_commands:
-        print(f'\ncommand sent...{command}')
-        time.sleep(1)
-    print('-'*50)     
-
+    login_config = template_obj.render(device=devicee, login_commands=login_commands)
+    print(login_config)
 
 def get_vlan_command():
 
     '''gets vlan configuration commands from user and returns a list of the commands'''
 
-    new_vlan_list = ['y', 'n']
-    new_vlan = input('add new vlan?(y/n): ')
-    if new_vlan.lower() not in new_vlan_list:
-        get_vlan_command()
-    elif new_vlan.lower() == 'n':
-        pass
-    elif new_vlan.lower() == 'y':
-        create_vlan()
-
-
+    with open('yaml-configs/vlan_commands.yaml') as vlan_config_file:
+        vlan_commands = yaml.full_load(vlan_config_file)
+    return vlan_commands
 
 def select_switches(number):
 
@@ -85,8 +64,6 @@ def select_switches(number):
         selected_switches.append(selected_switch)    
     return selected_switches
 
-
-
 def user_num():
 
     '''returns number of switches to connect to as declared by user'''
@@ -95,8 +72,6 @@ def user_num():
     num_switches = int(input(f'Enter the number of switches to connect to (max={max_num}): '))
     print('\n')
     return num_switches
-
-
 
 def connect():
 
@@ -132,14 +107,16 @@ if __name__ == "__main__":
     with open('yaml-configs/switches.yaml') as switch_file:
         switches = yaml.full_load(switch_file)
     max_num = len(switches)
+    
     #display available switches to user
     print('\nSELECT AN ID TO CONNECT TO A SWITCH\n'.center(15, ' '))
     print(f'SWITCHES\n'.center(15, ' '))
     accepted_input = []
-    print(f'id.'.ljust(5, ' ') + 'Switch'.ljust(5, ' ') + '\n')
+    print(f'id |'.ljust(5, ' ') + 'Switch'.ljust(5, ' ') + '\n')
     for idd, switch in enumerate(switches,start=1):
-        print( (str(idd) + '.').ljust(5, ' ') + switch.ljust(5, ' ') + '\n' )
+        print( (str(idd) + ' |').ljust(5, ' ') + switch.ljust(5, ' ') + '\n' )
         accepted_input.append(idd)
+        
     #connect to the device(s)
     connected_devices = connect()    
     #get the vlan commands
@@ -148,15 +125,13 @@ if __name__ == "__main__":
     
     #configure the device
     for device in connected_devices:
-        print(f'\nConnecting to switch {device}...\n')
-        time.sleep(1)
-        print('#'*50)
+        print('-'*50)
         print(f'Connected: {device}\n')
         time.sleep(1)
         send_login_config(device)
         send_vlan_config(device)
         send_save_config(device)
-        print('#'*50)
+        print('-'*50)
     
     stop_time = time.time()
     prog_time = round(stop_time - start_time, 2)
