@@ -8,25 +8,22 @@ def subnet_ip(addr_list):
     takes an ip address and subnet mask, calculates subnet info from subnet mask
     returns network address and broadcast address of ip address
     '''
-
+    
+    #get the ip address and subnet mask from the list
     ip_addr = addr_list[0]
     s_mask = addr_list[1]
 
+    #save the valid block sizes for a class C ip address
     valid_block_sizes = ['128', '192', '224', '240', '248', '252']
 
+    #get the ip address information
     network_bits = ip_addr.rindex('.')
     network_addr = ip_addr[ :network_bits].split('.')
     ip_address = ip_addr.split('.')
 
     #select subnet mask and convert all octets to binary
     subnet_mask = s_mask.split('.')
-    #for mask in subnet_mask:
-        #if mask != '255' or mask not in valid_block_sizes:
-            #print('\nError: invalid subnet mask\n')
-            #enter_ip()
-            
     subnet_mask_bin = [str(bin(int(octet))).replace('0b', '') for octet in subnet_mask]
-    
 
     #calculate the number of subnets
     '''
